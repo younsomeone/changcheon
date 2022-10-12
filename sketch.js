@@ -1,68 +1,84 @@
-let img1;
-let pretendard;
-let t = 100;
+let socket = io();
 
-function preload(){
-  img1 = loadImage('sky.png');
-  pretendard = loadFont('Pretendard-ExtraLight.otf');
-}
+let myButton;
+let myButton2;
+let myInput;
+let myText;
+let stuff;
+let bgColor;
 
-function setup(){
+let buttonX;
+let buttonY;
+let buttonRadius;
+let buttonH;
+
+
+
+function setup() {
   createCanvas(windowWidth, windowHeight);
-  let inp = createInput('7글자 이하로 입력해주세요.');
-  inp.position(75, windowHeight-220);
-  inp.size(windowWidth-150,170);
-  inp.style('font-size', '150px');
-  inp.style('font-family', 'pretendard');
-  inp.style('font-weight', '100')
-  inp.input(myInputEvent);
+  init();
+  background(240);
+    myInput = createInput();
+    // position the input
+    myInput.position(20, 20);
+
+    myInput.size(300,80);
+    myInput.style('font-size', '41px');
+    // position the button
+
+    // what is the callback for the button?
+
+    myText = '';
+    stuff='';
 }
+
+//초기화 함수
+function init(){
+  buttonX = width * 0.5;
+  buttonY = height * 0.5 - 100;
+  buttonRadius = 50;
+  buttonH = 15;
+}
+
+function draw() {
+  background(244);
+  button();
+}
+
+function button(){
+    //올라간 높이
+  let up = 15;
+  if(dist(mouseX,mouseY,buttonX,buttonY-buttonH)<buttonRadius){
+     up=10;
+      if (mouseIsPressed){
+      up=2;
+      doSomething1()
+     }
+    
+    }
+          
+  buttonH = lerp(buttonH,up,0.5)
   
-function myInputEvent() {
-  console.log('you are typing:', this.value());
+  noStroke();
+  //맨 아래
+  fill(120);
+  ellipse(buttonX,buttonY,buttonRadius*2,buttonRadius*2);
+  //위
+  fill(220)
+  ellipse(buttonX,buttonY-buttonH,buttonRadius*2,buttonRadius*2);
+  //맨위
+  fill("white");
+  ellipse(buttonX,buttonY-buttonH,buttonRadius*2-15,buttonRadius*2-15);
 }
 
-function windowResized(){
-  resizeCanvas(windowWidth,windowHeight);
-}
-
-function draw(){
-  background("white");
-  sky();
-  maintext();
-  fill(255);
-}
-
-function maintext() {
-  translate(70,150);
-  scale(1.1)
-  push();
-  fill("black");
-  textSize(70);
-  textFont(pretendard);
-  text("창천동 하늘에 날려보내고 싶은",0,0);
-  text("고민이나 소망을 적어보세요.",0,98);
-  fill(150);
-  textSize(30);
+function mouseIsPressed(){
   
-  strokeWeight(2.2)
-  line(5,-72,832,-72);
-  line(5,25,769.5,25);
-  //line(5,120,769.5,120);
-  pop();
 }
 
-function sky(){
-  //tint(255, t)
-  t=t+10;
-  if(t>=255){
-    t=t-31;
-  }
-  imageMode(CORNER)
-  image(img1,400,0,1000,600);
+function doSomething1() {
+socket.emit("value", myInput.value());
 }
 
-function doit(){
-  socket.emit("value", inp.value());
-  const name = inp.value();
+function doSomething2() {
+  socket.emit("value", myInput.value());
 }
